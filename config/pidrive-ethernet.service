@@ -1,0 +1,14 @@
+[Unit]
+Description=Pi-Drive USB Ethernet (RNDIS + ECM + NCM)
+After=network-pre.target
+Before=network.target
+Conflicts=pidrive-gadget.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/pidrive/config/usb-gadget.sh
+ExecStop=/opt/pidrive/config/usb-gadget.sh --stop
+
+[Install]
+WantedBy=multi-user.target

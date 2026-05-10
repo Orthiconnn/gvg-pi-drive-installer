@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pi-Drive</title>
+  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="site-title">Pi-Drive</h1>
+      <div class="header-center">
+        <div class="storage-bar" id="storageBar">
+          <div class="storage-fill" id="storageFill"></div>
+        </div>
+        <span class="storage-text" id="storageText">--</span>
+      </div>
+      <div class="header-right">
+        <div class="wifi-chip" id="wifiChip" title="WiFi">
+          <span class="material-icons-outlined" id="wifiChipIcon">wifi</span>
+          <span class="wifi-chip-ssid" id="wifiChipSsid"></span>
+        </div>
+        <span class="sync-indicator" id="syncIndicator" title="Connected">●</span>
+        <button class="btn btn-icon" id="btnSettings" title="Settings">
+          <span class="material-icons-outlined">settings</span>
+        </button>
+        <button class="btn btn-icon danger" id="btnShutdown" title="Shutdown Pi">
+          <span class="material-icons-outlined">power_settings_new</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="breadcrumbs" id="breadcrumbs">
+        <button class="breadcrumb-item" data-path="">Pi-Drive</button>
+      </div>
+      <div class="toolbar-actions">
+        <!-- Left: view toggles -->
+        <div class="toolbar-left">
+          <div class="view-toggle">
+            <button class="btn btn-icon active" id="viewGrid" title="Grid view">
+              <span class="material-icons-outlined">grid_view</span>
+            </button>
+            <button class="btn btn-icon" id="viewList" title="List view">
+              <span class="material-icons-outlined">view_list</span>
+            </button>
+          </div>
+        </div>
+        <!-- Right: new folder + upload -->
+        <div class="toolbar-right">
+          <button class="btn btn-icon" id="btnNewFolder" title="New Folder">
+            <span class="material-icons-outlined">create_new_folder</span>
+          </button>
+          <button class="btn btn-primary" id="btnUpload">
+            <span class="material-icons-outlined">upload</span>
+            Upload
+          </button>
+          <input type="file" id="fileInput" multiple hidden>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drop zone overlay -->
+    <div class="drop-overlay" id="dropOverlay">
+      <div class="drop-message">
+        <span class="material-icons-outlined">cloud_upload</span>
+        <p>Drop files to upload</p>
+      </div>
+    </div>
+
+    <!-- Upload progress -->
+    <div class="upload-progress" id="uploadProgress" hidden>
+      <div class="upload-progress-bar">
+        <div class="upload-progress-fill" id="uploadProgressFill"></div>
+      </div>
+      <span class="upload-progress-text" id="uploadProgressText"></span>
+    </div>
+
+    <!-- Selection bar -->
+    <div class="selection-bar inactive" id="selectionBar">
+      <span class="selection-count" id="selectionCount">0 selected</span>
+      <button class="btn btn-sm" id="btnMoveSelected">
+        <span class="material-icons-outlined">drive_file_move</span> Move
+      </button>
+      <button class="btn btn-sm danger" id="btnDeleteSelected">
+        <span class="material-icons-outlined">delete</span> Delete
+      </button>
+      <button class="btn btn-sm" id="btnClearSelection">
+        <span class="material-icons-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- File grid -->
+    <div class="file-container" id="fileContainer">
+      <div class="file-list-header" id="fileListHeader" hidden>
+        <span class="list-col-name">Name</span>
+        <span class="list-col-size">Size</span>
+        <span class="list-col-modified">Modified</span>
+      </div>
+      <div class="file-grid" id="fileGrid"></div>
+      <div class="empty-state" id="emptyState" hidden>
+        <span class="material-icons-outlined">folder_open</span>
+        <p>This folder is empty</p>
+        <p class="subtext">Drop files here or click Upload</p>
+      </div>
+    </div>
+
+    <!-- SMB / Network share info footer -->
+    <footer class="share-footer" id="shareFooter">
+      <span class="material-icons-outlined">lan</span>
+      <span id="footerWindows"><strong>Windows:</strong> <code>\\10.0.0.1\PiDrive</code></span>
+      <span class="share-sep">·</span>
+      <span id="footerMac"><strong>Mac / Linux:</strong> <code>smb://10.0.0.1/PiDrive</code></span>
+      <span class="share-sep">·</span>
+      <span>SMB: <code>drive</code> / <code>pidrive</code></span>
+      <span class="share-sep">·</span>
+      <span>SSH: <code>ssh drive@10.0.0.1</code></span>
+    </footer>
+
+    <!-- Context menu -->
+    <div class="context-menu" id="contextMenu" hidden>
+      <button data-action="download"><span class="material-icons-outlined">download</span> Download</button>
+      <button data-action="rename"><span class="material-icons-outlined">edit</span> Rename</button>
+      <hr>
+      <button data-action="delete" class="danger"><span class="material-icons-outlined">delete</span> Delete</button>
+    </div>
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <h2><span class="material-icons-outlined">settings</span> Settings</h2>
+          <button class="btn btn-icon" id="btnCloseSettings">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <section class="settings-section">
+            <h3><span class="material-icons-outlined">wifi</span> WiFi Networks</h3>
+            <div class="wifi-saved" id="wifiSaved">
+              <p class="text-dim">Loading saved networks...</p>
+            </div>
+            <div class="wifi-add">
+              <h4>Add / Update Network</h4>
+              <div class="wifi-form">
+                <div class="wifi-ssid-wrap">
+                  <input type="text" id="wifiSSID" placeholder="SSID (network name)" autocomplete="off">
+                  <datalist id="wifiScanList"></datalist>
+                  <div class="wifi-scan-results" id="wifiScanResults" hidden></div>
+                </div>
+                <input type="password" id="wifiPassword" placeholder="Password">
+                <div class="wifi-form-actions">
+                  <button class="btn btn-sm" id="btnWifiScan">
+                    <span class="material-icons-outlined">radar</span> Scan
+                  </button>
+                  <button class="btn btn-sm btn-primary" id="btnWifiSave">
+                    <span class="material-icons-outlined">add</span> Save & Connect
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Move Modal -->
+    <div class="modal-overlay" id="moveModal" hidden>
+      <div class="modal">
+        <div class="modal-header">
+          <h2><span class="material-icons-outlined">drive_file_move</span> Move To</h2>
+          <button class="btn btn-icon" id="btnCloseMoveModal">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="folder-tree" id="folderTree"></div>
+          <div class="move-modal-actions">
+            <span class="move-dest-label" id="moveDestLabel">Select a folder</span>
+            <button class="btn btn-primary" id="btnConfirmMove" disabled>
+              <span class="material-icons-outlined">drive_file_move</span> Move Here
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

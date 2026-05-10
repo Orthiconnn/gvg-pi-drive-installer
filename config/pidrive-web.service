@@ -1,0 +1,17 @@
+[Unit]
+Description=Pi-Drive Web Server
+After=network.target
+
+[Service]
+Type=simple
+User=drive
+WorkingDirectory=/opt/pidrive/server
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=SHARE_DIR=/srv/pidrive
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target

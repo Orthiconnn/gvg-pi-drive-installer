@@ -1,0 +1,6 @@
+[Unit]
+Description=Pi-Drive Wi-Fi watchdog (AP fallback check)
+
+[Service]
+Type=oneshot
+ExecStart=/opt/pidrive/scripts/wifi-check.sh

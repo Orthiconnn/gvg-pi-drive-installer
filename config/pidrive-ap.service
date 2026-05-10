@@ -1,0 +1,13 @@
+[Unit]
+Description=Pi-Drive Wi-Fi Access Point (fallback)
+After=network.target
+ConditionPathExists=/opt/pidrive/config/hostapd.conf
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/pidrive/scripts/ap-start.sh
+ExecStop=/opt/pidrive/scripts/ap-stop.sh
+
+[Install]
+# No WantedBy — started on-demand by wifi-check.sh, not on every boot

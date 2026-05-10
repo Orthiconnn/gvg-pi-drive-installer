@@ -1,0 +1,17 @@
+{
+  "name": "pidrive-server",
+  "version": "1.0.0",
+  "description": "Pi-Drive web file manager",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "SHARE_DIR=/Users/orthicon/Desktop/pidrive-demo node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "socket.io": "^4.7.5",
+    "chokidar": "^3.6.0",
+    "multer": "^1.4.5-lts.1",
+    "mime-types": "^2.1.35"
+  }
+}

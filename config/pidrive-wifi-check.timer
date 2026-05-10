@@ -1,0 +1,10 @@
+[Unit]
+Description=Pi-Drive Wi-Fi watchdog timer (runs every 60s)
+
+[Timer]
+OnBootSec=90
+OnUnitActiveSec=60
+Unit=pidrive-wifi-check.service
+
+[Install]
+WantedBy=timers.target

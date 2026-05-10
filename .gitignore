@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Secrets — never commit
+wpa_supplicant.conf
+config/hostapd.conf
+deploy-ap.sh
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+*.swp
+*.swo
+*~
+
+# Private dev files — stay local only
+deploy.sh
+mac-automount/
+AGENTS.md
+START-HERE.md
+CHANGELOG.md
+config/pidrive-gadget.service
